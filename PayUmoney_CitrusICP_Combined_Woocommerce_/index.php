@@ -742,7 +742,7 @@ function woocommerce_pumcp_init() {
 			$action = 'https://secure.payu.in/_payment.php';
 			
 			if($this->gateway_module == 'sandbox')
-				$action = 'https://test.payu.in/_payment.php';
+				$action = 'https://sandboxsecure.payu.in/_payment.php';
 				
 			$amount = $order -> order_total;
 			$productInfo = "Product Information";
