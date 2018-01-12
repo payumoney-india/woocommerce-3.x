@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: WooCommerce PayUMoney and Citrus combined
-Plugin URI: http://citruspay.com/
-Description: Extends WooCommerce with PayUMoney and Citrus pay In-Context Payment.
+Plugin Name: WooCommerce PayUmoney and Citrus combined
+Plugin URI: https://www.payumoney.com/
+Description: Extends WooCommerce with PayUmoney and Citrus pay In-Context Payment.
 Version: 2.0
-Author: Citruspay
-Author URI: http://citruspay.com
-Copyright: © 2017 Citruspay
+Author: PayUmoney
+Author URI: https://www.payumoney.com/
+Copyright: © 2016 PayUmoney. All rights reserved.
 */
 
 $bd=ABSPATH.'wp-content/plugins/'.dirname( plugin_basename( __FILE__ ) );
@@ -37,7 +37,7 @@ function woocommerce_pumcp_init() {
 		global $wpdb;
       // Go wild in here
       $this -> id = 'pumcp';
-      $this -> method_title = __('PayUMoney and Citrus', 'pumcp');
+      $this -> method_title = __('PayUmoney and Citrus', 'pumcp');
       $this -> icon = WP_PLUGIN_URL . "/" . plugin_basename(dirname(__FILE__)) . '/images/payulogo.png';
       $this -> has_fields = false;
       $this -> init_form_fields();
@@ -49,7 +49,7 @@ function woocommerce_pumcp_init() {
       $this -> access_key = $this -> settings['access_key'];
       $this -> api_key = $this -> settings['api_key'];
       $this -> redirect_page_id = $this -> settings['redirect_page_id'];
-      $this -> liveurl = 'http://www.citruspay.com';
+      $this -> liveurl = 'http://www.payumoney.com';
 	  $this -> pum_key = $this -> settings['pum_key'];
 	  $this -> pum_salt = $this -> settings['pum_salt'];
 	  $this -> route_citrus = $this -> settings['route_citrus'];
@@ -62,12 +62,12 @@ function woocommerce_pumcp_init() {
 				$this -> title = 'CitrusPay';			
 		}
 		elseif(!$this -> payment_url  && !$this -> access_key && !$this -> api_key) {
-				$this -> title = 'PayUMoney';
+				$this -> title = 'PayUmoney';
 		}
 		else {
 			if($this -> route_citrus == 0)
 			{
-				$this -> title = 'PayUMoney';
+				$this -> title = 'PayUmoney';
 			}
 			elseif($this -> route_payum == 0)
 			{
@@ -77,10 +77,10 @@ function woocommerce_pumcp_init() {
 		
 				$cper =$wpdb->get_row("SELECT COUNT(*) / T.total * 100 AS percent FROM `wp_comments` as I, (SELECT DISTINCT COUNT(*) AS total FROM `wp_comments` where `comment_type` like 'order_note' and `comment_agent` like 'WooCommerce') AS T WHERE `comment_type` like 'order_note' and `comment_agent` like 'WooCommerce' and `comment_content` like '%CitrusPay'");
 				
-				$pper = $wpdb->get_row("SELECT COUNT(*) / T.total * 100 AS percent FROM `wp_comments` as I, (SELECT DISTINCT COUNT(*) AS total FROM `wp_comments` where `comment_type` like 'order_note' and `comment_agent` like 'WooCommerce') AS T WHERE `comment_type` like 'order_note' and `comment_agent` like 'WooCommerce' and `comment_content` like '%PayUMoney'");			
+				$pper = $wpdb->get_row("SELECT COUNT(*) / T.total * 100 AS percent FROM `wp_comments` as I, (SELECT DISTINCT COUNT(*) AS total FROM `wp_comments` where `comment_type` like 'order_note' and `comment_agent` like 'WooCommerce') AS T WHERE `comment_type` like 'order_note' and `comment_agent` like 'WooCommerce' and `comment_content` like '%PayUmoney'");			
 				
 				if($cper->percent > $this -> route_citrus && $pper->percent <= $this -> route_payum) {
-					$this -> title = 'PayUMoney';
+					$this -> title = 'PayUmoney';
 				}
 				elseif($cper->percent <= $this -> route_citrus && $pper->percent > $this -> route_payum) {
 					$this -> title = 'CitrusPay';
@@ -89,7 +89,7 @@ function woocommerce_pumcp_init() {
 					if($pper->percent >= $cper->percent)
 							$this -> title = 'CitrusPay';
 						else
-							$this -> title = 'PayUMoney';
+							$this -> title = 'PayUmoney';
 					}
 				}
 			}
@@ -121,13 +121,13 @@ function woocommerce_pumcp_init() {
         'enabled' => array(
             'title' => __('Enable/Disable', 'pumcp'),
             'type' => 'checkbox',
-						'label' => __('Enable PayUMoney + Citrus ICP Module.', 'pumcp'),
+						'label' => __('Enable PayUmoney + Citrus ICP Module.', 'pumcp'),
             'default' => 'no'),
 		  'description' => array(
 			'title' => __('Description:', 'pumcp'),
 			'type' => 'textarea',
 			'description' => __('This controls the description which the user sees during checkout.', 'pumcp'),
-			'default' => __('Pay securely by Credit or Debit card or net banking through PayU Money or Citrus ICP.', 'pumcp')),
+			'default' => __('Pay securely by Credit or Debit card or net banking through PayUmoney or Citrus ICP.', 'pumcp')),
           'gateway_module' => array(
             'title' => __('Gateway Mode', 'pumcp'),
             'type' => 'select',
@@ -135,12 +135,12 @@ function woocommerce_pumcp_init() {
             'description' => __('Mode of gateway subscription.','pumcp')
             ),
 		  'pum_key' => array(
-            'title' => __('PayUMoney Key', 'pumcp'),
+            'title' => __('PayUmoney Key', 'pumcp'),
             'type' => 'text',
             'description' =>  __('PayU Money merchant key.', 'pumcp')
             ),
 		  'pum_salt' => array(
-            'title' => __('PayUMoney Salt', 'pumcp'),
+            'title' => __('PayUmoney Salt', 'pumcp'),
             'type' => 'text',
             'description' =>  __('PayU Money merchant salt.', 'pumcp')
             ),
@@ -165,9 +165,9 @@ function woocommerce_pumcp_init() {
             'description' =>  __('%-age of total payments to be routed to Citrus', 'pumcp')
             ),
 		  'route_payum' => array(
-            'title' => __('Payment to Route to PayUMoney (%)', 'pumcp'),
+            'title' => __('Payment to Route to PayUmoney (%)', 'pumcp'),
             'type' => 'text',
-            'description' =>  __('%-age of total payments to be routed to PayUMoney', 'pumcp')
+            'description' =>  __('%-age of total payments to be routed to PayUmoney', 'pumcp')
             ),
           'redirect_page_id' => array(
             'title' => __('Return Page'),
@@ -183,8 +183,8 @@ function woocommerce_pumcp_init() {
      * - Options for bits like 'title' and availability on a country-by-country basis
      **/
     public function admin_options(){
-      echo '<h3>'.__('PayUMoney and Citrus combined payment', 'pumcp').'</h3>';
-      echo '<p>'.__('PayUMoney and Citrus are most popular payment gateways for online shopping in India').'</p>';
+      echo '<h3>'.__('PayUmoney and Citrus combined payment', 'pumcp').'</h3>';
+      echo '<p>'.__('PayUmoney and Citrus are most popular payment gateways for online shopping in India').'</p>';
 	  echo '<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>';
       echo '<table class="form-table">';
       $this -> generate_settings_html();
@@ -474,7 +474,7 @@ function woocommerce_pumcp_init() {
 			
 		} //Citrus response end
 		
-		if($_GET['pg'] == 'PayUMoney') {
+		if($_GET['pg'] == 'PayUmoney') {
 			$postdata = $_POST;			
 			
 			if (isset($postdata ['key']) && ($postdata['key'] == $this -> pum_key)) {
@@ -486,7 +486,8 @@ function woocommerce_pumcp_init() {
 				$productInfo  		= 	$postdata['productinfo'];
 				$firstname    		= 	$postdata['firstname'];
 				$email        		=	$postdata['email'];
-				$keyString 	  		=  	$this -> pum_key.'|'.$txnid.'|'.$amount.'|'.$productInfo.'|'.$firstname.'|'.$email.'||||||||||';
+				$udf5				=   $postdata['udf5'];
+				$keyString 	  		=  	$this -> pum_key.'|'.$txnid.'|'.$amount.'|'.$productInfo.'|'.$firstname.'|'.$email.'|||||'.$udf5.'|||||';
 				$keyArray 	  		= 	explode("|",$keyString);
 				$reverseKeyArray 	= 	array_reverse($keyArray);
 				$reverseKeyString	=	implode("|",$reverseKeyArray);
@@ -524,9 +525,9 @@ function woocommerce_pumcp_init() {
 						{
 							//complete the order
 							$order -> payment_complete();
-							$order -> add_order_note('PayUMoney has processed the payment. Ref Number: '. $txnid);
+							$order -> add_order_note('PayUmoney has processed the payment. Ref Number: '. $txnid);
 							$order -> add_order_note($this->msg['message']);
-							$order -> add_order_note("Paid by PayUMoney");
+							$order -> add_order_note("Paid by PayUmoney");
 							$woocommerce -> cart -> empty_cart();
 						}
 					}
@@ -603,7 +604,6 @@ function woocommerce_pumcp_init() {
 		if($this -> title == 'CitrusPay')
 		{  
 		//Setup URL and signatue etc.
-		
 		$vanityUrl = $this->payment_url;
 		$merchantTxnId = $order_id;
 		$merchantAccessKey = $this -> access_key;
@@ -737,7 +737,7 @@ function woocommerce_pumcp_init() {
 		} //CitrusPay End
 		
 		
-		if($this -> title == 'PayUMoney')
+		if($this -> title == 'PayUmoney')
 		{
 			$action = 'https://secure.payu.in/_payment.php';
 			
@@ -758,8 +758,9 @@ function woocommerce_pumcp_init() {
 			$surl = $redirect_url;
 			$furl = $redirect_url;
 			$curl = $redirect_url;
+			$udf5 = "WooCommerce_v_3.0";
 			
-			$hash=hash('sha512', $this -> pum_key.'|'.$order_id.'|'.$amount.'|'.$productInfo.'|'.$firstname.'|'.$email.'|||||||||||'.$this -> pum_salt); 
+			$hash=hash('sha512', $this -> pum_key.'|'.$order_id.'|'.$amount.'|'.$productInfo.'|'.$firstname.'|'.$email.'|||||'.$udf5.'||||||'.$this -> pum_salt); 
 			$user_credentials = $this -> pum_key.':'.$email;		
 			$service_provider = 'payu_paisa';
 	
@@ -784,6 +785,7 @@ function woocommerce_pumcp_init() {
 					    <input type=\"hidden\" name=\"city\" value=\"". $city."\" />
 				        <input type=\"hidden\" name=\"country\" value=\"".$country."\" />
 				        <input type=\"hidden\" name=\"state\" value=\"". $state."\" />
+						<input type=\"hidden\" name=\"udf5\" value=\"". $udf5."\" />
 				        <button style='display:none' id='submit_payum_payment_form' name='submit_payum_payment_form'>Pay Now</button>
 					</form>
 					<script type=\"text/javascript\">document.getElementById(\"payu_form\").submit();</script>
@@ -791,7 +793,7 @@ function woocommerce_pumcp_init() {
 					
 			return $html;
 			
-		}//PayUMoney end
+		}//PayUmoney end
     }
     
         
